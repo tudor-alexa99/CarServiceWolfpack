@@ -64,6 +64,16 @@ class Service
 
   end
 
+  ()
+
+  def user_brings_car()
+    # Method to be used as a "pretty print". Prints the result of the add_reservation to the user
+    pick_up_time = add_reservation
+    puts "You can come back for your car on #{pick_up_time.strftime("%A")}, #{pick_up_time.strftime("%d-%m")}, #{pick_up_time.strftime("at %I:%M %p")}"
+  end
+
+
+
   def add_reservation()
     # get the first available worker, i.e. the closest time a worker can take the car
     available_time = first_available_worker
@@ -131,61 +141,7 @@ end
 service = Service.new
 puts service.first_available_worker
 
-puts "Working hours: "
-puts service.get_daily_working_hours(Time.now + 3 * 24 * 3600)
-puts service.add_reservation
-puts service.add_reservation
-puts service.add_reservation
-puts service.add_reservation
-puts service.add_reservation # TODO: aici crapa ==> next day functionality nu seteaza ora cum trebuie
-puts service.add_reservation
-puts service.add_reservation
-puts service.add_reservation
-puts service.add_reservation
-puts service.add_reservation
-puts service.add_reservation
-puts service.add_reservation
-puts service.add_reservation
-puts service.add_reservation
-puts service.add_reservation
-puts service.add_reservation
-puts service.add_reservation
-puts service.add_reservation
-puts service.add_reservation
-puts service.add_reservation
-puts service.add_reservation
-puts service.add_reservation
-puts service.add_reservation
-puts service.add_reservation
-puts service.add_reservation
-puts service.add_reservation
-puts service.add_reservation
-puts service.add_reservation
-puts service.add_reservation
-puts service.add_reservation
-puts service.add_reservation
-puts service.add_reservation
-puts service.add_reservation
-puts service.add_reservation
-puts service.add_reservation
-puts service.add_reservation
-puts service.add_reservation
-puts service.add_reservation
-puts service.add_reservation
-puts service.add_reservation
-puts service.add_reservation
-puts service.add_reservation
-puts service.add_reservation
-puts service.add_reservation
-puts service.add_reservation
-puts service.add_reservation
-puts service.add_reservation
-puts service.add_reservation
-puts service.add_reservation
-puts service.add_reservation
-puts service.add_reservation
-puts service.add_reservation
-puts service.add_reservation
-puts service.add_reservation
-puts service.add_reservation
+20.times do
+  service.user_brings_car
+end
 
