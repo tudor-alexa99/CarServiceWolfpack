@@ -1,9 +1,6 @@
 class Service
   # Since 2 processes can take place at the same time, save them in different time schedules
-  # If they overlap, the time window is unavailable
-  #
   # For each process, keep track of the ending time. Each time a new car is added, increase the lowest ending time
-
 
   OPEN_FROM_WEEKDAY = "8:30"
   CLOSE_AT_WEEKDAY = "19:30"
@@ -61,10 +58,7 @@ class Service
                    CLOSE_AT_WEEKDAY.split(":")[0],
                    CLOSE_AT_WEEKDAY.split(":")[1])
     end
-
   end
-
-  ()
 
   def user_brings_car()
     # Method to be used as a "pretty print". Prints the result of the add_reservation to the user
@@ -72,13 +66,13 @@ class Service
     puts "You can come back for your car on #{pick_up_time.strftime("%A")}, #{pick_up_time.strftime("%d-%m")}, #{pick_up_time.strftime("at %I:%M %p")}"
   end
 
-
-
   def add_reservation()
     # get the first available worker, i.e. the closest time a worker can take the car
     available_time = first_available_worker
     process_car(available_time)
   end
+
+  private
 
   def first_available_worker
     # method that returns the first available time for a car to be processed
@@ -137,11 +131,3 @@ class Service
   end
 
 end
-
-service = Service.new
-puts service.first_available_worker
-
-20.times do
-  service.user_brings_car
-end
-
