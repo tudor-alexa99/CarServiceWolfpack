@@ -1,5 +1,3 @@
-require_relative 'time_interval'
-
 class Service
   # Since 2 processes can take place at the same time, save them in different time schedules
   # If they overlap, the time window is unavailable
@@ -8,7 +6,7 @@ class Service
 
 
   OPEN_FROM_WEEKDAY = "8:30"
-  CLOSE_AT_WEEKDAY = "16:30"
+  CLOSE_AT_WEEKDAY = "19:30"
 
   OPEN_FROM_WEEKEND = "10:00"
   CLOSE_AT_WEEKEND = "14:00"
@@ -25,31 +23,41 @@ class Service
     @worker_2_available = @starting_hours.dup
   end
 
-  def get_daily_working_hours(day = Time.now)
-    day = day.strftime("%A")
-    case day
+  def get_daily_working_hours(date = Time.now)
+    week_day = date.strftime("%A")
+    case week_day
     when "Saturday"
-      return Time.new(Time.now.year,
-                      Time.now.month,
-                      Time.now.day,
+      return Time.new(date.year,
+                      date.month,
+                      date.day,
                       OPEN_FROM_WEEKEND.split(":")[0],
                       OPEN_FROM_WEEKEND.split(":")[1]),
-          Time.new(Time.now.year,
-                   Time.now.month,
-                   Time.now.day,
+          Time.new(date.year,
+                   date.month,
+                   date.day,
                    CLOSE_AT_WEEKEND.split(":")[0],
                    CLOSE_AT_WEEKEND.split(":")[1])
-    when "Sunday"
-      return [0, 0], [0, 0] # we'll see if this is any useful
+    when "Sunday" # return a valid TIme datatype int the 00:00 ==> 00:00 interval
+      return Time.new(date.year,
+                      date.month,
+                      date.day,
+                      0,
+                      0),
+          Time.new(date.year,
+                   date.month,
+                   date.day,
+                   0,
+                   0)
+
     else
-      return Time.new(Time.now.year,
-                      Time.now.month,
-                      Time.now.day,
+      return Time.new(date.year,
+                      date.month,
+                      date.day,
                       OPEN_FROM_WEEKDAY.split(":")[0],
                       OPEN_FROM_WEEKDAY.split(":")[1]),
-          Time.new(Time.now.year,
-                   Time.now.month,
-                   Time.now.day,
+          Time.new(date.year,
+                   date.month,
+                   date.day,
                    CLOSE_AT_WEEKDAY.split(":")[0],
                    CLOSE_AT_WEEKDAY.split(":")[1])
     end
@@ -98,14 +106,14 @@ class Service
   def process_next_day(extra_time, process_car_time)
     # check if the following day is not a Sunday, and get the next available day if so
     next_day = get_daily_working_hours(process_car_time + 1 * 24 * 3600)
-    if next_day.strftime("%A") == "Sunday"
+    if next_day[0].strftime("%A") == "Sunday"
       next_day = get_daily_working_hours(process_car_time + 2 * 24 * 3600)
     end
 
     available_worker = [@worker_1_available, @worker_2_available].min
-    available_worker = next_day + extra_time
+    available_worker = next_day[0] + extra_time
     # [@worker_1_available, @worker_2_available].min = available_worker <== for some reason, this does not work
-    set_available_worker(process_car_time)
+    set_available_worker(available_worker)
     # the pick-up time will be this one
     return [@worker_1_available, @worker_2_available].max
   end
@@ -120,15 +128,58 @@ class Service
 
 end
 
-# TODO: salveaza 2 variabile, fiecare reprezinta pana cand e ocupat un moncitor
-# TODO: Metoda de cautat care e prima ora disponibila
-# TODO: Metoda care calculeaza cand primesti masina inapoi
-
 service = Service.new
 puts service.first_available_worker
 
 puts "Working hours: "
 puts service.get_daily_working_hours(Time.now + 3 * 24 * 3600)
+puts service.add_reservation
+puts service.add_reservation
+puts service.add_reservation
+puts service.add_reservation
+puts service.add_reservation # TODO: aici crapa ==> next day functionality nu seteaza ora cum trebuie
+puts service.add_reservation
+puts service.add_reservation
+puts service.add_reservation
+puts service.add_reservation
+puts service.add_reservation
+puts service.add_reservation
+puts service.add_reservation
+puts service.add_reservation
+puts service.add_reservation
+puts service.add_reservation
+puts service.add_reservation
+puts service.add_reservation
+puts service.add_reservation
+puts service.add_reservation
+puts service.add_reservation
+puts service.add_reservation
+puts service.add_reservation
+puts service.add_reservation
+puts service.add_reservation
+puts service.add_reservation
+puts service.add_reservation
+puts service.add_reservation
+puts service.add_reservation
+puts service.add_reservation
+puts service.add_reservation
+puts service.add_reservation
+puts service.add_reservation
+puts service.add_reservation
+puts service.add_reservation
+puts service.add_reservation
+puts service.add_reservation
+puts service.add_reservation
+puts service.add_reservation
+puts service.add_reservation
+puts service.add_reservation
+puts service.add_reservation
+puts service.add_reservation
+puts service.add_reservation
+puts service.add_reservation
+puts service.add_reservation
+puts service.add_reservation
+puts service.add_reservation
 puts service.add_reservation
 puts service.add_reservation
 puts service.add_reservation
