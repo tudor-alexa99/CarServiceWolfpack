@@ -21,49 +21,68 @@ class Service
   end
 
   def get_daily_working_hours(date = Time.now)
+    # returns the working hours within a day. Can take a different date as a parameter
     week_day = date.strftime("%A")
     case week_day
     when "Saturday"
-      return Time.new(date.year,
-                      date.month,
-                      date.day,
-                      OPEN_FROM_WEEKEND.split(":")[0],
-                      OPEN_FROM_WEEKEND.split(":")[1]),
-          Time.new(date.year,
-                   date.month,
-                   date.day,
-                   CLOSE_AT_WEEKEND.split(":")[0],
-                   CLOSE_AT_WEEKEND.split(":")[1])
-    when "Sunday" # return a valid TIme datatype int the 00:00 ==> 00:00 interval
-      return Time.new(date.year,
-                      date.month,
-                      date.day,
-                      0,
-                      0),
-          Time.new(date.year,
-                   date.month,
-                   date.day,
-                   0,
-                   0)
+      return Time.new(
+          date.year,
+          date.month,
+          date.day,
+          OPEN_FROM_WEEKEND.split(":")[0],
+          OPEN_FROM_WEEKEND.split(":")[1]
+      ),
+
+          Time.new(
+              date.year,
+              date.month,
+              date.day,
+              CLOSE_AT_WEEKEND.split(":")[0],
+              CLOSE_AT_WEEKEND.split(":")[1]
+          )
+
+    when "Sunday" # return a valid Time datatype in the 00:00 ==> 00:00 interval
+      return Time.new(
+          date.year,
+          date.month,
+          date.day,
+          0,
+          0
+      ),
+
+          Time.new(
+              date.year,
+              date.month,
+              date.day,
+              0,
+              0
+          )
 
     else
-      return Time.new(date.year,
-                      date.month,
-                      date.day,
-                      OPEN_FROM_WEEKDAY.split(":")[0],
-                      OPEN_FROM_WEEKDAY.split(":")[1]),
-          Time.new(date.year,
-                   date.month,
-                   date.day,
-                   CLOSE_AT_WEEKDAY.split(":")[0],
-                   CLOSE_AT_WEEKDAY.split(":")[1])
+      return Time.new(
+          date.year,
+          date.month,
+          date.day,
+          OPEN_FROM_WEEKDAY.split(":")[0],
+          OPEN_FROM_WEEKDAY.split(":")[1]),
+
+          Time.new(
+              date.year,
+              date.month,
+              date.day,
+              CLOSE_AT_WEEKDAY.split(":")[0],
+              CLOSE_AT_WEEKDAY.split(":")[1])
     end
   end
 
   def user_brings_car()
     # Method to be used as a "pretty print". Prints the result of the add_reservation to the user
     pick_up_time = add_reservation
-    puts "You can come back for your car on #{pick_up_time.strftime("%A")}, #{pick_up_time.strftime("%d-%m")}, #{pick_up_time.strftime("at %I:%M %p")}"
+    puts
+    "You can come back for your car on
+      #{pick_up_time.strftime("%A")},
+      #{pick_up_time.strftime("%d-%m")},
+      #{pick_up_time.strftime("at %I:%M %p")}"
   end
 
   def add_reservation()
@@ -76,7 +95,7 @@ class Service
 
   def first_available_worker
     # method that returns the first available time for a car to be processed
-    # Make sure the time they are available is >= than the current time
+    # Makes sure the time they are available is >= than the current time
     # If not, set their values to the current time
     @worker_1_available = Time.now if @worker_1_available < Time.now
     @worker_2_available = Time.now if @worker_2_available < Time.now
@@ -114,15 +133,16 @@ class Service
       next_day = get_daily_working_hours(process_car_time + 2 * 24 * 3600)
     end
 
-    available_worker = [@worker_1_available, @worker_2_available].min
     available_worker = next_day[0] + extra_time
     # [@worker_1_available, @worker_2_available].min = available_worker <== for some reason, this does not work
     set_available_worker(available_worker)
+
     # the pick-up time will be this one
     return [@worker_1_available, @worker_2_available].max
   end
 
   def set_available_worker(process_car_time)
+    # Assigns the next car that needs processing to the worker that will be available first
     if @worker_1_available < @worker_2_available
       @worker_1_available = process_car_time
     else
