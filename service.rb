@@ -20,78 +20,59 @@ class Service
     @worker_2_available = @starting_hours.dup
   end
 
-  def get_daily_working_hours(date = Time.now)
-    # returns the working hours within a day. Can take a different date as a parameter
-    week_day = date.strftime("%A")
-    case week_day
-    when "Saturday"
-      return Time.new(
-          date.year,
-          date.month,
-          date.day,
-          OPEN_FROM_WEEKEND.split(":")[0],
-          OPEN_FROM_WEEKEND.split(":")[1]
-      ),
-
-          Time.new(
-              date.year,
-              date.month,
-              date.day,
-              CLOSE_AT_WEEKEND.split(":")[0],
-              CLOSE_AT_WEEKEND.split(":")[1]
-          )
-
-    when "Sunday" # return a valid Time datatype in the 00:00 ==> 00:00 interval
-      return Time.new(
-          date.year,
-          date.month,
-          date.day,
-          0,
-          0
-      ),
-
-          Time.new(
-              date.year,
-              date.month,
-              date.day,
-              0,
-              0
-          )
-
-    else
-      return Time.new(
-          date.year,
-          date.month,
-          date.day,
-          OPEN_FROM_WEEKDAY.split(":")[0],
-          OPEN_FROM_WEEKDAY.split(":")[1]),
-
-          Time.new(
-              date.year,
-              date.month,
-              date.day,
-              CLOSE_AT_WEEKDAY.split(":")[0],
-              CLOSE_AT_WEEKDAY.split(":")[1])
-    end
-  end
-
-  def user_brings_car()
-    # Method to be used as a "pretty print". Prints the result of the add_reservation to the user
-    pick_up_time = add_reservation
-    puts
-    "You can come back for your car on
+  def user_brings_car
+    # Method to be used as a " pretty print ". Prints the result of the pickup_time to the user
+    pick_up_time = pickup_time
+    puts "You can come back for your car on
       #{pick_up_time.strftime("%A")},
       #{pick_up_time.strftime("%d-%m")},
-      #{pick_up_time.strftime("at %I:%M %p")}"
+      #{pick_up_time.strftime("at %I:%M %p")}" #{pick_up_time.strftime("%A")}, #{pick_up_time.strftime("%d-%m"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    #{pick_up_time.strftime("at %I:%M %p")}"
   end
 
-  def add_reservation()
+  def pickup_time
     # get the first available worker, i.e. the closest time a worker can take the car
     available_time = first_available_worker
     process_car(available_time)
   end
 
   private
+
+  def get_daily_working_hours(date = Time.now)
+    # returns the working hours within a day. Can take a different date as a parameter
+    week_day = date.strftime("%A")
+
+    case week_day
+    when "Saturday"
+      starting_hours = OPEN_FROM_WEEKEND.split(":")[0]
+      starting_mins = OPEN_FROM_WEEKEND.split(":")[1]
+      closing_hours = CLOSE_AT_WEEKEND.split(":")[0]
+      closing_mins = CLOSE_AT_WEEKEND.split(":")[1]
+    when "Sunday"
+      starting_hours = 0
+      starting_mins = 0
+      closing_hours = 0
+      closing_mins = 0
+    else
+      starting_hours = OPEN_FROM_WEEKDAY.split(":")[0]
+      starting_mins = OPEN_FROM_WEEKDAY.split(":")[1]
+      closing_hours = CLOSE_AT_WEEKDAY.split(":")[0]
+      closing_mins = CLOSE_AT_WEEKDAY.split(":")[1]
+    end
+
+    [Time.new(
+        date.year,
+        date.month,
+        date.day,
+        starting_hours,
+        starting_mins
+    ), Time.new(
+        date.year,
+        date.month,
+        date.day,
+        closing_hours,
+        closing_mins
+    )]
+  end
 
   def first_available_worker
     # method that returns the first available time for a car to be processed
@@ -113,17 +94,16 @@ class Service
     # if the car cannot be processed within the day, move it to the next available day
     if closing_hours < process_car_time
       extra_time = process_car_time - closing_hours
-      return process_next_day(extra_time, process_car_time)
+      process_next_day(extra_time, process_car_time)
     else
-      # I know the returns are redundant, I added them to emphasise that the value will be used outside
-      return process_today(process_car_time)
+      process_today(process_car_time)
     end
   end
 
   def process_today(process_car_time)
     # Set the first available worker to take care of the car, increase the available time value
     set_available_worker(process_car_time)
-    return [worker_1_available, @worker_2_available].max
+    [worker_1_available, @worker_2_available].max
   end
 
   def process_next_day(extra_time, process_car_time)
@@ -138,7 +118,7 @@ class Service
     set_available_worker(available_worker)
 
     # the pick-up time will be this one
-    return [@worker_1_available, @worker_2_available].max
+    [@worker_1_available, @worker_2_available].max
   end
 
   def set_available_worker(process_car_time)
@@ -151,3 +131,4 @@ class Service
   end
 
 end
+
